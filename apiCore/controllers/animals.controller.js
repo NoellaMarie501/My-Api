@@ -6,8 +6,9 @@ const { verifyToken } = require("../middleware/control");
 
 //Getting all Animals
 app.get("/all", async function (req, res) {
-
-  const animals = await AnimalService.Animals();
+  const page = req.query.page
+  const size = req.query.size
+  const animals = await AnimalService.Animals(page, size);
 
   responseHandler({...animals, res})
 });
@@ -32,10 +33,10 @@ app.post("/new_Animal", verifyToken, async function (req, res) {
   //console.log(req.body);
   let name = req.body.name;
   let description = req.body.description;
-  let animalAdmin = req.body.AnimalAdmin;
+  let userId = req.body.userId;
   
   //console.log("req.body",req.body)
-  const animal = await AnimalService.createAnimal(name, description, animalAdmin);
+  const animal = await AnimalService.createAnimal(name, description, userId);
   responseHandler({...animal, res})
 });
 

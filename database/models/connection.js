@@ -1,5 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const {connection} = require("../../constants");
+const csv = require('csv-parser');
+const fs = require('fs');
 require('dotenv').config();
 
  const db = {};
@@ -56,5 +58,6 @@ sequelize
   .catch((err) => {
     console.log("===Error in Data Base synchronisation): " + err + " ====");
   });
+
 
 module.exports = db;

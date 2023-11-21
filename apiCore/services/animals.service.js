@@ -3,11 +3,11 @@ const { HTTP_STATUS } = require("../../constants");
 
 class Animalservice {
   //Method to create a new Animal
-  static async createAnimal(name, description, animalAdmin) {
+  static async createAnimal(name, description, userId) {
     const animal = await AnimalRepository.createAnimal(
       name,
       description,
-      animalAdmin
+      userId
     );
     if (!animal) {
       return {
@@ -58,8 +58,10 @@ class Animalservice {
   }
 
   //getting all Animals
-  static async Animals() {
-    const animals = await AnimalRepository.allAnimals();
+  static async Animals(page, size) {
+
+  
+    const animals = await AnimalRepository.allAnimals(page, size);
     if (!animals) {
       return {
         error: "Could Not get animal",

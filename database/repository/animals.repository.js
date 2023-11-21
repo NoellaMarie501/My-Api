@@ -2,7 +2,7 @@ const db = require("../models/connection");
 const userModel = require("../models/user.model");
 class AnimalRepository {
   //cresting new Animal
-  static async createAnimal(name, description, animalAdmin) {
+  static async createAnimal(name, description, userId) {
     // console.log("AnimalAdmin", AnimalAdmin);
     const user = await db.users.findByPk(animalAdmin);
     if (!user) return "User cannot create Animal because User does't exists";
@@ -10,8 +10,7 @@ class AnimalRepository {
     const animal = await db.animals.create({
       name,
       description,
-      animalAdmin,
-      //   user,
+      userId,
     });
 
     if (!animal) {
@@ -51,9 +50,23 @@ class AnimalRepository {
   }
 
   //getting all Animals
-  static async allAnimals() {
+  static async allAnimals(page, size) {
     //getting all pojects
-    const allAnimals = await db.animals.findAll({});
+   
+    const validatedPage = parseInt(page, 10);
+    const validatedSize = parseInt(size, 10);
+    console.log("page, size: " + validatedPage, validatedSize);
+    // Calculate offset based on page and size
+    const offset = (validatedPage - 1) * validatedSize;
+
+    const allAnimals = await db.animals.findAndCountAll({
+      limit: validatedSize,
+      offset: offset
+    });
+
+    allAnimals.numberOfPages = Math.ceil(allAnimals.count/size)
+    allAnimals.currentPage = page
+    console.log("number of rows", allAnimals);
 
     return allAnimals;
   }
