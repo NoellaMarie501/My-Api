@@ -35,17 +35,7 @@ class UserRepository {
     }
     return user;
   }
-//get user with associated projects
-static async getUserWithProjects(UserId){
-  const user = await this.findUserById(UserId);
-    if (!user) {
-      return null
-    }
-    const associatedProjects = await db.users.findByPk(UserId, {
-      include: [{ model: db.projects}]
-    });
-    return associatedProjects;
-}
+
   //finding user with email
   static async findUserByEmail(email) {
     const user = await db.users.findOne({

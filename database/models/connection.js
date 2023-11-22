@@ -11,7 +11,7 @@ require('dotenv').config();
 // const dbPassword = process.env.DB_PASSWORD
 // const host = process.env.HOST
 // const port = process.env.PORT
- console.log(connection)
+ 
 
 // const sequelize = new Sequelize(
 

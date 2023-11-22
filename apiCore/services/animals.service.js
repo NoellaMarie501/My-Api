@@ -60,8 +60,9 @@ class Animalservice {
   //getting all Animals
   static async Animals(page, size) {
 
-  
+    console.log("Service");
     const animals = await AnimalRepository.allAnimals(page, size);
+    console.log(animals)
     if (!animals) {
       return {
         error: "Could Not get animal",

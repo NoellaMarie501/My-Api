@@ -1,5 +1,10 @@
 const db = require("../models/connection");
 const userModel = require("../models/user.model");
+const redis = require("redis");
+
+//creating redis client for caching
+const redisClient = redis.createClient({ host: "localhost", port: 6379 });
+
 class AnimalRepository {
   //cresting new Animal
   static async createAnimal(name, description, userId) {
@@ -51,32 +56,54 @@ class AnimalRepository {
 
   //getting all Animals
   static async allAnimals(page, size) {
-    //getting all pojects
-   
-    const validatedPage = parseInt(page, 10);
-    const validatedSize = parseInt(size, 10);
-    console.log("page, size: " + validatedPage, validatedSize);
-    // Calculate offset based on page and size
-    const offset = (validatedPage - 1) * validatedSize;
+    return new Promise((resolve, reject) => {
+      // Check if client connection has an error
+      redisClient.on("error", (error) => {
+        console.log("Redis client error:", error);
+        reject(error);
+      });
 
-    const allAnimals = await db.animals.findAndCountAll({
-      limit: validatedSize,
-      offset: offset
+      redisClient.get("AnimalData", async (err, data) => {
+        if (err) {
+          console.error("Error fetching data from Redis:", err);
+          reject(err);
+        }
+
+        // Check if the data is already cached
+        if (data) {
+          resolve(JSON.parse(data));
+        } else {
+          // Data not cached, fetch from the database
+          try {
+            const allAnimals = await db.animals.findAndCountAll({
+              offset:10,
+              limit: 5,
+            });
+
+            // Set or cache the data in Redis
+            redisClient.setex("AnimalData", 180, JSON.stringify(allAnimals));
+
+            resolve(allAnimals);
+          } catch (error) {
+            console.error("Error fetching data from the database:", error);
+            reject(error);
+          }
+        }
+      });
     });
-
-    allAnimals.numberOfPages = Math.ceil(allAnimals.count/size)
-    allAnimals.currentPage = page
-    console.log("number of rows", allAnimals);
-
-    return allAnimals;
+  
+    // allAnimals.numberOfPages = Math.ceil(allAnimals.count / size);
+    // allAnimals.currentPage = page;
+    // console.log("number of rows", allAnimals);
   }
 
   //getting an animal by name
   static async getAnimalByName(name) {
+    const animal = await db.animals.findOne({ where: { name: name } });
+    if (!animal) {
+      return null;
+    }
 
-    const animal = await db.animals.findOne({where: { name: name}})
-    if(!animal) {return null;}
-    
     return animal;
   }
 

@@ -9,7 +9,7 @@ app.get("/all", async function (req, res) {
   const page = req.query.page
   const size = req.query.size
   const animals = await AnimalService.Animals(page, size);
-
+  console.log("Controller");
   responseHandler({...animals, res})
 });
 

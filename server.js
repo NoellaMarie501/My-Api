@@ -1,18 +1,32 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT;
-const host = "localhost";
+const REDIS_PORT = process.env.REDIS_PORT;
+const host = process.env.HOST;
 const UsersController = require("./apiCore/controllers/users.controller");
 const AnimalsController = require("./apiCore/controllers/animals.controller");
 const cors = require("cors"); //Cross-Origin Resource Sharing (CORS)
-//var serveIndex = require("serve-index");
+const redis = require("redis");
 
-app.use(cors("*")); //enabling connection from another domain or server such as the front end
+// Create Redis client
+const redisClient = redis.createClient({ host: host, port: REDIS_PORT });
+
+// Event listeners for Redis client
+(() => {
+  redisClient.on("ready", () => console.log(`Redis client ready`));
+  redisClient.on("error", (error) =>
+    console.log(`Redis client error: ${error}`)
+  );
+  redisClient.on("connect", () =>
+    console.log(`Connected to Redis on Port: ${REDIS_PORT}`)
+  );
+  redisClient.on("reconnect", () => console.log(`Redis client reconnected`));
+})();
+
+app.use(cors("*")); // Enabling connection from another domain or server such as the front end
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(express.static("resources/uploads"));
-//app.use('/resources', serveIndex(path.join(__dirname, 'resources/')));
 app.use("/users", UsersController);
 app.use("/animals", AnimalsController);
 app.get("/", function (req, res) {
@@ -20,7 +34,7 @@ app.get("/", function (req, res) {
 });
 
 app.listen(PORT, host, () => {
-   console.log(`listening on port = ${PORT}`);
+  console.log(`Listening on port = ${PORT}`);
 });
 
 module.exports = app;
