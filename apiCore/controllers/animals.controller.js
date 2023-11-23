@@ -6,11 +6,19 @@ const { verifyToken } = require("../middleware/control");
 
 //Getting all Animals
 app.get("/all", async function (req, res) {
-  const page = req.query.page
-  const size = req.query.size
+  const page = req.query.page || 1
+  const size = req.query.size || 10
   const animals = await AnimalService.Animals(page, size);
   console.log("Controller");
   responseHandler({...animals, res})
+});
+
+//getting animal with name
+app.get("/animal", async function (req, res) {
+  let name = req.query.name;
+  console.log("Controller");
+  const animal = await AnimalService.getAnimalWithName(name);
+  responseHandler({...animal, res})
 });
 
 //getting a Animal with id
@@ -20,12 +28,7 @@ app.get("/:id", async function (req, res) {
   responseHandler({...animal, res})
 });
 
-//getting animal with name
-app.get("/:name", async function (req, res) {
-  let name = req.params.name;
-  const animal = await AnimalService.getAnimalWithName(id);
-  responseHandler({...animal, res})
-});
+
 
 
 //Posting or creating a Animal

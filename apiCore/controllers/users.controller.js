@@ -23,7 +23,7 @@ app.post("/signin", async function (req, res) {
 });
 
 //getting a user with id
-app.get("/:id", async function (req, res) {
+app.get("/:id",verifyToken, async function (req, res) {
   let id = req.params.id;
   let response = await UserService.getUser(id);
   responseHandler({ ...response, res });

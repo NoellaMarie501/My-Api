@@ -1,3 +1,5 @@
+const deleteKeysWithPatern = require("../../apiCore/utils/deleteKeysWithPatern");
+const paginate = require("../../apiCore/utils/pagination");
 const db = require("../models/connection");
 const userModel = require("../models/user.model");
 const redis = require("redis");
@@ -27,12 +29,30 @@ class AnimalRepository {
 
   //finding Animal by id
   static async findAnimalById(id) {
-    const animal = await db.animals.findByPk(id);
+    const redisKey = `AnimalData:${id}`;
+    console.log("here");
+    return new Promise((resolve, reject) => {
+      //check if there was an error in redis
+      redisClient.on("error", (error) => {
+        console.log("Redis client error:", error);
+        reject(error);
+      });
 
-    if (!animal) {
-      return null;
-    }
-    return animal;
+      redisClient.get(redisKey, async (error, data) => {
+        if (data) {
+          //console.log("Redis key", redisKey);
+          resolve(JSON.parse(data));
+        } else {
+          const animal = await db.animals.findByPk(id);
+
+          if (!animal) {
+            resolve(null);
+          }
+          redisClient.setex(redisKey, 180, JSON.stringify(animal));
+          resolve(animal);
+        }
+      });
+    });
   }
 
   //updating Animal
@@ -56,6 +76,14 @@ class AnimalRepository {
 
   //getting all Animals
   static async allAnimals(page, size) {
+    //creating cache key with the page and size parameters to be unique
+    const cacheKey = `AnimalData:${page}:${size}`;
+
+    //getting the validated or appropriet page(offset) and size(limit)
+    const pagination = paginate(page, size);
+    const validatedSize = pagination.validatedSize;
+    const offset = pagination.offset;
+
     return new Promise((resolve, reject) => {
       // Check if client connection has an error
       redisClient.on("error", (error) => {
@@ -63,7 +91,7 @@ class AnimalRepository {
         reject(error);
       });
 
-      redisClient.get("AnimalData", async (err, data) => {
+      redisClient.get(cacheKey, async (err, data) => {
         if (err) {
           console.error("Error fetching data from Redis:", err);
           reject(err);
@@ -76,12 +104,23 @@ class AnimalRepository {
           // Data not cached, fetch from the database
           try {
             const allAnimals = await db.animals.findAndCountAll({
-              offset:10,
-              limit: 5,
+              offset: offset,
+              limit: validatedSize,
             });
+            //check if no animal in the database
+            if (!allAnimals) {
+              resolve(null);
+            }
+            //add the number of pages for this pagination and the current page to the animals object
+            allAnimals.numberOfPages = Math.ceil(
+              allAnimals.count / validatedSize
+            );
+            allAnimals.currentPage = page;
 
+           // console.log("number of rows", allAnimals);
+           console.log("not found");
             // Set or cache the data in Redis
-            redisClient.setex("AnimalData", 180, JSON.stringify(allAnimals));
+            redisClient.setex(cacheKey, 180, JSON.stringify(allAnimals));
 
             resolve(allAnimals);
           } catch (error) {
@@ -91,39 +130,76 @@ class AnimalRepository {
         }
       });
     });
-  
-    // allAnimals.numberOfPages = Math.ceil(allAnimals.count / size);
-    // allAnimals.currentPage = page;
-    // console.log("number of rows", allAnimals);
   }
 
   //getting an animal by name
   static async getAnimalByName(name) {
-    const animal = await db.animals.findOne({ where: { name: name } });
-    if (!animal) {
-      return null;
-    }
+    const redisKey = `AnimalData:${name}`;
 
-    return animal;
+    return new Promise((resolve, reject) => {
+      //check if there was an error in redis
+      redisClient.on("error", (error) => {
+        console.log("Redis client error:", error);
+        reject(error);
+      });
+
+      redisClient.get(redisKey, async (error, data) => {
+        //checking if an error occurred in getting from redis
+        if (error) {
+          console.log("An error occured getting from redis cache:", error);
+          reject(error);
+        }
+        //checking if data exist in cache
+        if (data) {
+          //console.log("Redis key", data);
+          resolve(JSON.parse(data));
+        } else {
+          const animal = await db.animals.findOne({ where: { name: name } });
+
+          //if no animal was found in database
+          if (!animal) {
+            resolve(null);
+          }
+          //set the data if found in the cache
+          redisClient.setex(redisKey, 180, JSON.stringify(animal));
+          resolve(animal);
+        }
+      });
+    });
   }
 
   //deleting a Animal with id
   static async deleteAnimal(id) {
-    const animal = await db.animals.findByPk(id);
-    if (!animal) {
-      return null;
+    try {
+      const redisKey = `AnimalData:${id}`;
+      const animal = await this.findAnimalById(id);
+      console.log("animal", id);
+      if (!animal) {
+        return null;
+      }
+
+      //getting all pojects
+      const deletedNUm = await db.animals.destroy({
+        where: {
+          id: animal.id,
+        },
+      });
+      //console.log("del",deletedNUm);
+      if (!deletedNUm) {
+        return null;
+      }
+      redisClient.on("error", (error) => {
+        console.log("error when connecting to redis", error);
+      });
+
+      //when a value or row is deleted clear the cache with the prefix note not the entire cache
+      //redisClient.del(redisKey);
+      deleteKeysWithPatern("AnimalData")
+
+      return deletedNUm;
+    } catch (error) {
+      console.log(error);
     }
-    //getting all pojects
-    const deletedNUm = await db.animals.destroy({
-      where: {
-        id: animal.id,
-      },
-    });
-    //console.log("del",deletedNUm);
-    if (!deletedNUm) {
-      return null;
-    }
-    return deletedNUm;
   }
 }
 

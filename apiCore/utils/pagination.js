@@ -1,4 +1,4 @@
-export default function paginate(page, size){
+module.exports = function paginate(page, size){
 
     const validatedPage = parseInt(page, 10);
     const validatedSize = parseInt(size, 10);

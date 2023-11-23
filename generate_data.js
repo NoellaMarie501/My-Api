@@ -24,7 +24,7 @@ const generateCSV = (filePath, numRows) => {
 
 // Specify the file path and the number of rows you want
 const filePath = 'animals_data.csv';
-const numRows = 1000;
+const numRows = 1500;
 
 // Generate the CSV file
 generateCSV(filePath, numRows);
