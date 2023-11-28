@@ -11,7 +11,7 @@ class AnimalRepository {
   //cresting new Animal
   static async createAnimal(name, description, userId) {
     // console.log("AnimalAdmin", AnimalAdmin);
-    const user = await db.users.findByPk(animalAdmin);
+    const user = await db.users.findByPk(userId);
     if (!user) return "User cannot create Animal because User does't exists";
     //console.log("AnimalAdmin", AnimalAdmin);
     const animal = await db.animals.create({
