@@ -25,7 +25,6 @@ class UserService {
     }
   }
 
-
   //Update user
   static async UpdateUser(id, options) {
     const user = await UserRepository.updateUser(id, options);
