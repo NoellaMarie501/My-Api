@@ -25,14 +25,6 @@ class UserService {
     }
   }
 
-  //get user with associated projects
-  static async getUser(UserId){
-    const user = await UserRepository.getUser(UserId)
-  if (!user) {
-    return { error: "user not found", status: HTTP_STATUS.BAD_REQUEST, message : "could not get user and associated projects"}
-  }
-  return {status : HTTP_STATUS.OK, data : user}
-  }
 
   //Update user
   static async UpdateUser(id, options) {
@@ -52,9 +44,9 @@ class UserService {
   }
 
   //Get User
-  static async GetUser(id) {
+  static async getUser(id) {
     const user = await UserRepository.findUserByIdNoPwd(id);
-    if (!animals) {
+    if (!user) {
       return {
         error: "Could Not get animal",
         status: HTTP_STATUS.BAD_REQUEST,
@@ -64,7 +56,7 @@ class UserService {
     return {
       status: HTTP_STATUS.OK,
       message: "Animal!!",
-      data: animals,
+      data: user,
     };
   }
 
