@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/users", UsersController);
 app.use("/animals", AnimalsController);
 app.get("/", function (req, res) {
-  res.send("Welcome");
+  res.send("Welcome To My Api");
 });
 
 app.listen(PORT, host, () => {

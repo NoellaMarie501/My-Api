@@ -1,13 +1,49 @@
 # Welcome to My Basecamp 1
 Welcome to My Basecamp 1
 
+
+# Links
+
+- Project Url : http://ec2-51-20-185-230.eu-north-1.compute.amazonaws.com:3001/animals/all?page=2&size=10
+
+- postman collection : https://www.postman.com/interstellar-astronaut-675638/workspace/my-api/collection/18751873-0ddd9843-053a-4694-92b1-11a379ba3436?action=share&creator=18751873
+
+- Swagger Documentation : 
+
 ## Task
-You will have a to create a website which mimique features from the original tools My Basecamp. It means having a database, a backend and a frontend.
-This project is splitted in 3 parts.
+This project is divided into 3 parts. At the end you will host your application in the cloud. :)
+Part I
 
-We want our users to create their accounts, to connect and create projects!
+Find a topic you like (volcanoes/earthquakes/animals/...), get a lot (more than 1k row data)
+Part II
 
-As developer you need to think about the User Experience and it needs to be great.
+Build an API backend using any framework you want to use.
+
+Features of your project:
+
+    User authentification in order to administer the data
+
+    User Token (OAuth)
+
+    Get/Post/Update/Destroy on your topic
+    -- Get must be accessible without being connected
+
+    Get will provide pagination (max 20 elements per page)
+
+    Cache (redis)
+
+    (Optional) A Graphql interface
+
+    Documentation, but you can use swagger on your API. Example
+
+    A postman Documentation (and you will provide the link inside your readme)
+
+Part III
+
+Your project must be hosted in the cloud. (AWS/Google Cloud/Azure/IBM)
+Each of these providers have a free tier. You should be able to host it for 0$. :)
+
+
 
 ## Description
 
@@ -15,17 +51,8 @@ As developer you need to think about the User Experience and it needs to be grea
 
 - The Main functionalities are:
   - A user can Register
-  - A user can to perform CRUD on a project
-  - A user can be added, deleted edited or viewed. Note only admin has permission to delete, view and edit all users unless it is the user editing his account himself
-  - User should have a role either a simple user or a user and an admin at the same time.
-  - A user who created the project is the project admin and can:
-      * Add or remove an attachment from the project
-      * Associate or remove another user from his project
-      * Creat, edit, delete a thread or conversation for his project
-      * write messages in the project conversation channel
-  - Only users associated with the project can wite messages in the thread
-  - Only the owner of a project can edit or delete a project except the      admin.
-  - when session is expired the user is redirected to the login page.
+  - A user can to perform CRUD on the Animal topic
+  - A user can be added, deleted edited or viewed if it is the user editing his account himself
 
 # Project Structure for the API 
 
@@ -45,7 +72,7 @@ As developer you need to think about the User Experience and it needs to be grea
 
 ## Installation
 ## Usage
-Once the two severs are up and running with the ports and host specified you can now register and use the application
+Once the sever is up and running with the ports and host specified you can now register and use the application
 ```
 
 
