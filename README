@@ -44,7 +44,7 @@ Welcome to My Basecamp 1
 
 1. **Clone the Repository**:
   ```bash
-  git clone https://github.com/your-username/My-Api.git
+  git clone https://github.com/username/My-Api.git
   cd My-Api
   ```
 
