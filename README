@@ -4,55 +4,24 @@ Welcome to My Basecamp 1
 
 # Links
 
-- Project Url : http://ec2-51-20-185-230.eu-north-1.compute.amazonaws.com:3001/animals/all?page=2&size=10
+- Project Url :
 
-- postman collection : https://www.postman.com/interstellar-astronaut-675638/workspace/my-api/collection/18751873-0ddd9843-053a-4694-92b1-11a379ba3436?action=share&creator=18751873
+- postman collection : 
 
 - Swagger Documentation : 
 
-## Task
-This project is divided into 3 parts. At the end you will host your application in the cloud. :)
-Part I
-
-Find a topic you like (volcanoes/earthquakes/animals/...), get a lot (more than 1k row data)
-Part II
-
-Build an API backend using any framework you want to use.
-
-Features of your project:
-
-    User authentification in order to administer the data
-
-    User Token (OAuth)
-
-    Get/Post/Update/Destroy on your topic
-    -- Get must be accessible without being connected
-
-    Get will provide pagination (max 20 elements per page)
-
-    Cache (redis)
-
-    (Optional) A Graphql interface
-
-    Documentation, but you can use swagger on your API. Example
-
-    A postman Documentation (and you will provide the link inside your readme)
-
-Part III
-
-Your project must be hosted in the cloud. (AWS/Google Cloud/Azure/IBM)
-Each of these providers have a free tier. You should be able to host it for 0$. :)
-
-
 
 ## Description
+- This project is designed to provide an API for managing and querying animal-related data.
 
-- This is a project meant to facilitate project management amoungst a team
-
-- The Main functionalities are:
-  - A user can Register
-  - A user can to perform CRUD on the Animal topic
-  - A user can be added, deleted edited or viewed if it is the user editing his account himself
+- The main functionalities include:
+  - A user can register and authenticate using OAuth tokens.
+  - A user can perform CRUD operations on the Animal topic.
+  - A user can manage their own account, including adding, deleting, editing, or viewing their profile.
+  - Pagination is implemented for fetching data, with a maximum of 20 elements per page.
+  - Data caching is supported using Redis.
+  - GraphQL interface for advanced querying.
+  - Comprehensive API documentation is provided via Swagger and Postman.
 
 # Project Structure for the API 
 
@@ -71,13 +40,49 @@ Each of these providers have a free tier. You should be able to host it for 0$. 
 
 
 ## Installation
+### Setup
+
+1. **Clone the Repository**:
+  ```bash
+  git clone https://github.com/your-username/My-Api.git
+  cd My-Api
+  ```
+
+2. **Install Dependencies**:
+  Ensure you have Node.js and npm installed. Run:
+  ```bash
+  make install
+  ```
+
+3. **Configure Environment Variables**:
+  Create a `.env` file in the root directory and add the following variables:
+  ```
+  DATABASE_URL=<your-database-url>
+  REDIS_URL=<your-redis-url>
+  JWT_SECRET=<your-jwt-secret>
+  PORT=<your-server-port>
+  ```
+
+4. **Seed the Database**:
+  Run the database seeding script to populate initial data:
+  ```bash
+  make seed
+  ```
+
+5. **Start the Server**:
+  Launch the server using:
+  ```bash
+  make start
+  ```
+  The server will be accessible at `http://localhost:<PORT>`.
+
 ## Usage
-Once the sever is up and running with the ports and host specified you can now register and use the application
+Once the sever is up and running with the ports and host specified you can now register and use the application with the provided postman collection following the swagger documentation
 ```
 
 
 ### The Core Team
-CHEO MARIE NOEL KIENG
+MARIE NOEL KIENG CHEO
 
-<span><i>Made at <a href='https://qwasar.io'>Qwasar SV -- Software Engineering School</a></i></span>
-<span><img alt='Qwasar SV -- Software Engineering School's Logo' src='https://storage.googleapis.com/qwasar-public/qwasar-logo_50x50.png' width='20px' /></span>
+<span><i>Made by <a href=''>Marie CHEO -- Software Engineering </a></i></span>
+

@@ -46,18 +46,17 @@ app.put("/update/:id", verifyToken,  async function (req, res) {
   let id = req.params.id;
   let options = req.body;
 
-  const user = await UserService.UpdateUser(id, options);
+  const response = await UserService.UpdateUser(id, options);
 
-  res.send(user);
+  responseHandler({ ...response, res });
 });
 
 //deleting a User
 app.delete("/delete/:id", verifyToken, async function (req, res) {
   let id = req.params.id;
   // console.log('delete id', id);
-  const user = await UserService.DeleteUser(id);
-  if (user) res.status(200).send("deleted User successfully");
-  else res.status(404).send("No user found nor deleted");
+  const response = await UserService.DeleteUser(id);
+  responseHandler({ ...response, res });
 });
 
 module.exports = app;

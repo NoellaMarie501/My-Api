@@ -32,7 +32,7 @@ class UserService {
       return {
         error: "Could Not Update User",
         status: HTTP_STATUS.BAD_REQUEST,
-        message: "Unable to Update User",
+        message: "User Not Found"
       };
     }
     return {
@@ -47,14 +47,14 @@ class UserService {
     const user = await UserRepository.findUserByIdNoPwd(id);
     if (!user) {
       return {
-        error: "Could Not get animal",
+        error: "Could Not get User",
         status: HTTP_STATUS.BAD_REQUEST,
-        message: "Animal not found",
+        message: "User Not Found",
       };
     }
     return {
       status: HTTP_STATUS.OK,
-      message: "Animal!!",
+      message: "User Found!!",
       data: user,
     };
   }
@@ -102,6 +102,7 @@ class UserService {
       return {
         message: "Wrong Email or password",
         status: HTTP_STATUS.BAD_REQUEST,
+        error: "Could Not Sign In"
       };
     }
     //checking if passwords match
@@ -111,6 +112,7 @@ class UserService {
       return {
         message: "Wrong Email or password",
         status: HTTP_STATUS.BAD_REQUEST,
+        error: "Could Not Sign In"
       };
     }
 
@@ -119,7 +121,7 @@ class UserService {
 
     user.dataValues.token = token;
 
-    return { data: user, status: HTTP_STATUS.OK };
+    return { data: user, status: HTTP_STATUS.OK, message : "User Signed In!!!" };
   }
 }
 module.exports = UserService;

@@ -8,20 +8,13 @@ class UserRepository {
       password,
       email
     });
-    if (!user) {
-     // console.log("REPOSITORY no user");
-    } else {
-      //console.log("REPOSITORY user: " + user);
-    }
     return user;
   }
 
   //Finding user with id
   static async findUserById(id) {
     const user = await db.users.findByPk(id);
-    if (!user) {
-      return "User Not found";
-    }
+    
     return user;
   }
 
@@ -30,9 +23,6 @@ class UserRepository {
     const user = await db.users.findByPk(id, {
       attributes: { exclude: ["password"] },
     });
-    if (!user) {
-      return "User Not found";
-    }
     return user;
   }
 
@@ -52,7 +42,7 @@ class UserRepository {
     //checking if user exist first before updating
     const user = await this.findUserById(id);
     if (!user) {
-      return "User Not found";
+      return null;
     }
 
     //updating user with the options
